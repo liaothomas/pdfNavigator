@@ -1,0 +1,87 @@
+<div>
+  <h2>PDF Navigation Component</h2>
+</div>
+<div>
+  <br>
+  <label>
+    <strong>File From Local Resource:</strong>
+  </label>
+  <br>
+  <div *ngFor="let file of files">
+    <button (click)="loadFile(file.name, file.id)">
+      <strong>{{file.id}}:</strong>
+      {{file.name}} ({{file.size}} KB)
+    </button>
+    <br>
+  </div>
+  <br>
+  <div>
+    <label>
+      <strong>Selected File:</strong>
+    </label>
+    <span>{{currentFileName}}</span>
+  </div>
+  <br>
+  <label>
+    <strong>Page(s) to Use:</strong>
+  </label>
+  <input [(ngModel)]="pageSet" type="text" id="pages" (blur)="onPagesBlur()" [value]="1">
+</div>
+<div>
+  <input type="radio" name="displayType" value="single" (change)="handleChange('single')" checked="true">
+  <span style="vertical-align:1px">Show single pages</span>
+  <input type="radio" name="displayType" value="continuous" (change)="handleChange('continuous')">
+  <span style="vertical-align:1px">Show continuous pages</span>
+  <input type="radio" name="displayType" value="thumbnail" (change)="handleChange('thumbnail')">
+  <span style="vertical-align:1px">Show thumbnails</span>
+</div>
+<br>
+<div *ngIf="displayType === 'single'">
+  <div>
+    <p>Page {{index[itemIdx]}} of {{pdfPages}}</p>
+  </div>
+  <div>
+    <button class="btn" (click)="onPrevious()" [disabled]="itemIdx === 0 || !pdfPages">
+      Previous
+    </button>
+    <button class="btn" (click)="onNext()" [disabled]="itemIdx === (index.length - 1) || !pdfPages">
+      Next
+    </button>
+  </div>
+
+  <app-view-pdf-page [docId]="docId" [pageNum]="page" (afterLoadComplete)="onLoadComplete($event)">
+  </app-view-pdf-page>
+</div>
+<div *ngIf="displayType === 'continuous'">
+  <div>
+    <p>Total pages: {{pdfPages}}</p>
+  </div>
+  <div>
+    <label>% scaling:</label>
+    <input type="number" [(ngModel)]="zoomPerCent" (change)="onScaleChange($event)">
+  </div>
+  <br>
+  <div *ngFor="let itemIdx of index">
+    <app-view-pdf-page
+      [docId]="docId"
+      [pageNum]="itemIdx"
+      [zoomPercent]="zoomPerCent"
+      (afterLoadComplete)="onLoadComplete($event)"
+    >
+    </app-view-pdf-page>
+  </div>
+</div>
+<div *ngIf="displayType === 'thumbnail'" style="width: 10em">
+  <div>
+    <p>Total pages: {{pdfPages}}</p>
+  </div>
+  <div *ngFor="let itemIdx of index">
+    <app-view-pdf-page
+      [docId]="docId"
+      [pageNum]="itemIdx"
+      [currentPageInfo]="currentDocInfo ? currentDocInfo.pageInfo[itemIdx - 1] : null"
+      [zoomPercent]="100"
+      (afterLoadComplete)="onLoadComplete($event)"
+    ></app-view-pdf-page>
+    </div>
+</div>

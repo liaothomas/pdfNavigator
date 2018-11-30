@@ -1,0 +1,18 @@
+<div>
+  <pdf-viewer [src]="pdfSrc" [page]="mappedPageNum" [show-all]="false" [render-text]="true" [autoresize]="true"
+    [original-size]="false" [zoom]="zoomLevel" style="display: block;">
+  </pdf-viewer>
+  <div *ngIf="currentPageInfo" style="border-width: 1px;border-color: black;border-style: solid;background-color: lightblue;padding:0.5em">
+    <strong>Tags:</strong>
+    {{currentPageInfo.Tags}}
+    <br>
+    <strong>Completed:</strong>
+    {{currentPageInfo.Completed | date}}
+    <br>
+    <strong>Technician:</strong>
+    {{currentPageInfo.Technician}}
+    <br>
+    <strong>Inspector:</strong>
+    {{currentPageInfo.Inspector}}
+  </div>
+</div>
